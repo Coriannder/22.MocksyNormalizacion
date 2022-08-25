@@ -2,6 +2,7 @@
 import express from 'express'
 import { Server as HttpServer }  from 'http'
 import { Server as IOServer } from 'socket.io'
+import { createManyProducts, createProduct, nextId} from './mocks/productosMocks.js'
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
@@ -12,7 +13,7 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 
 
-app.get('/', (req, res) => {
+app.get('/api/productos-test', (req, res) => {
     res.render('pages/index')
 })
 
@@ -26,26 +27,13 @@ import { ContainerDB } from "./container/container.js";
 const containerProducts = new ContainerDB(optionMySQL)
 const containerMessages = new ContainerDB(optionSQLite)
 
-const prod = [                   // Productos a cargar por defecto
-    {
-        title: 'Paper plane' , price: 100 ,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/plane-paper-toy-science-school-512.png'
-    },
-    {
-        title: 'Ruler' ,
-        price: 200 ,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-512.png'
-    },
-    {
-        title: 'Pen' ,
-        price: 125 ,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/pencil-pen-stationery-school-512.png'
-    }
-]
+const prod = createManyProducts(15)       // Mockeo 3 productos
+console.log(prod)
 
 await containerProducts.newTable()           // Creo tabla porducts
 await containerMessages.newTable()           // Creo tabla messages
 await containerProducts.save(prod)           // Guardo porductos en tabla products
+console.log(await containerProducts.getAll())
 
 
 //--------------------------Websockets----------------------------//
@@ -75,7 +63,7 @@ io.on('connection', async (socket) => {
 
 //------------------Configuracion Server---------------------------------//
 
-const PORT = 8081
+const PORT = 8080
 const server = httpServer.listen(PORT, ()=>{
     console.log(`Servidor escuchando en el puerto ${server.address().port}`)
 })
