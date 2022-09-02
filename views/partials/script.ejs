@@ -22,7 +22,7 @@
         const html = chat.map(message => {
             return (`
             <p>
-                <strong>${message.author}</strong> <span>[${message.date}]</span> :  <i>${message.text}</i>
+                <strong>${message.author.alias}</strong> <span>[${message.author.email}]</span> :  <i>${message.text}</i>
             </p>
             `);
         }).join(" ")
@@ -33,21 +33,43 @@
 
     /* Funcion para agregar mensaje al chat */
     const addMessage = () => {
-        const author = document.getElementById("userEmail").value
+        const email = document.getElementById("userEmail").value
+        const nombre = document.getElementById("nombre").value
+        const apellido = document.getElementById("apellido").value
+        const edad = document.getElementById("edad").value
+        const alias = document.getElementById("alias").value
         const text =  document.getElementById("newMessage").value
-        const today = new Date();
-        if(author === ''){
+        //const today = new Date();
+        if(email === ''){
             document.getElementById("userEmail").placeholder = 'Debe ingresar su email'
         }else{
-            const now = today.toLocaleString();
+            if(nombre === ''){
+            document.getElementById("nombre").placeholder = 'Debe ingresar su nombre'
+        }else{
+            if(apellido === ''){
+            document.getElementById("apellido").placeholder = 'Debe ingresar su apellido'
+        }else{
+            if(edad === ''){
+            document.getElementById("edad").placeholder = 'Debe ingresar su edad'
+        }else{
+            if(alias === ''){
+            document.getElementById("alias").placeholder = 'Debe ingresar su alias'
+        }else{
+            //const now = today.toLocaleString();
             const message = {
-                    author: author,
-                    date: now,
+                    author: {
+                        email: email,
+                        nombre: nombre,
+                        apellido: apellido,
+                        edad: edad,
+                        alias: alias
+                    },
+                    //date: now,
                     text: text
             };
             /* Envio nuevo mensaje al chat */
             socket.emit('newMessage', message);
             console.log(message)
-        }}
+        }}}}}}
 
 </script>
